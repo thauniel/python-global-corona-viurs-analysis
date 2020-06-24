@@ -1,0 +1,106 @@
+import requests
+import parsel
+
+url="https://ncov2019.live/"
+html=requests.get(url)
+k=html.text
+selector = parsel.Selector(k)
+def worlddata():
+    worldrows = selector.css('#sortable_table_world tbody tr')
+    worldname = worldrows.css('.save-button::attr(data-name)').getall()
+    worldconfirmed = list(
+        map(lambda x: x.strip().replace(',', ''), worldrows.css('td:nth-child(2)::text').getall()))
+    worldconfirmed.pop(0)
+    worlddata = dict(zip(worldname, worldconfirmed))
+    print(worlddata)
+    return worlddata
+def australiadata():
+    australiarows=selector.css('#sortable_table_australia tbody tr')
+    australianame = australiarows.css('.save-button::attr(data-name)').getall()
+    australianame.append('Australia')
+    australiaconfirmed = list(map(lambda x: x.strip().replace(',', ''), australiarows.css('td:nth-child(2)::text').getall()))
+    australiaconfirmed.append(7436)
+    australiaconfirmed.pop(0)
+    australiadata = dict(zip(australianame, australiaconfirmed))
+    print(len(australianame), len(australiaconfirmed))
+    print(australiadata)
+    return australiadata
+
+def usdata():
+    usrows=selector.css('#container_unitedstates tbody tr')
+    for row in usrows:
+        name=row.css('.save-button::attr(data-name)').get()
+        confirmed=row.css('.text--green::text').get()
+        true_confirmed=confirmed.replace(',','').strip()
+        critical=row.css('.text--orange::text').get()
+        deceased=row.css('.text--red::text').get()
+        deceased=deceased.replace(',','').strip()
+        tests=row.css('.text--amber::text').get()
+        active=row.css('text--yellow::text').get()
+        recovered=row.css('text--blue::text').get()
+
+
+def eudata():
+    eurows=selector.css('#sortable_table_europe tbody tr')
+    euname = eurows.css('.save-button::attr(data-name)').getall()
+    euconfirmed = list(map(lambda x: x.strip().replace(',', ''), eurows.css('td:nth-child(2)::text').getall()))
+    euconfirmed.pop(0)
+    eudata = dict(zip(euname, euconfirmed))
+    print(len(euname), len(euconfirmed))
+    print(eudata)
+    return eudata
+
+def asdata():
+    asrows=selector.css('#sortable_table_asia tbody tr')
+    asname = asrows.css('.save-button::attr(data-name)').getall()
+    asconfirmed = list(map(lambda x: x.strip().replace(',', ''), asrows.css('td:nth-child(2)::text').getall()))
+    asconfirmed.pop(0)
+    asdata = dict(zip(asname, asconfirmed))
+    print(len(asname), len(asconfirmed))
+    print(asdata)
+    return asdata
+    for row in asrows:
+        name = row.css('.save-button::attr(data-name)').get()
+        confirmed = row.css('.text--green::text').get()
+        true_confirmed = confirmed.replace(',', '').strip()
+        critical = row.css('.text--orange::text').get()
+        deceased = row.css('.text--red::text').get()
+        deceased = deceased.replace(',', '').strip()
+        tests = row.css('.text--amber::text').get()
+        active = row.css('text--yellow::text').get()
+        recovered = row.css('text--blue::text').get()
+        print(true_confirmed, name, deceased, recovered)
+
+
+
+
+
+def crawlafdata():
+    afrows=selector.css('#sortable_table_africa tbody tr')
+    aname = afrows.css('.save-button::attr(data-name)').getall()
+    for name in aname:
+        if name=='South Sudan':
+            aname[aname.index(name)]='S.Sudan'
+    print(aname)
+    aconfirmed = list(map(lambda x:x.strip().replace(',',''),afrows.css('td:nth-child(2)::text').getall()))
+    aconfirmed.pop(0) #删除第一个元素
+    a=dict(zip(aname,aconfirmed))
+    print(len(aname),len(aconfirmed))
+    print(a)
+    return a
+
+    for row in afrows:
+        aname = row.css('.save-button::attr(data-name)').get()
+        aconfirmed = row.css('.text--green::text').get()
+        atrue_confirmed = aconfirmed.replace(',', '').strip()
+        acritical = row.css('.text--orange::text').get()
+        adeceased = row.css('.text--red::text').get()
+        adeceased = adeceased.replace(',', '').strip()
+        atests = row.css('.text--amber::text').get()
+        aactive = row.css('text--yellow::text').get()
+        arecovered = row.css('text--blue::text').get()
+        dick={aname:atrue_confirmed}
+    print(dick)
+
+    return aname,atrue_confirmed,arecovered,adeceased
+crawlafdata()
